@@ -32,6 +32,7 @@ export const CreatePost = () => {
 
         fetch('/v1/api/create-post', {
             method: 'POST',
+            credentials: 'include',
             body: JSON.stringify({ title, summary, content }),
             headers: {
                 'Content-Type': 'application/json'

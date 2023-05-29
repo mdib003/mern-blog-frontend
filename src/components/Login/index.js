@@ -39,9 +39,10 @@ export const Login = () => {
             headers: {
                 "Content-type": "application/json"
             }
-        }).then(d =>  d.json()).then(res => {          
-            if (res.check && res.userExist && res.pw) {                
+        }).then(d =>  d.json()).then(async res => {          
+            if (res.check && res.userExist && res.pw) {
                 setNavigate(true)
+                await profileHandler()
             } else if (!res.check && res.userExist && !res.pw) {
                 setPasswordError(true)
                 setPasswordErrorMsg(res.msg)
@@ -51,7 +52,7 @@ export const Login = () => {
             }
         }) 
 
-        await profileHandler()
+        
     }
 
     if (navigate) {

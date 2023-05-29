@@ -15,28 +15,30 @@ function App() {
   const [appValues, setAppValues] = useState({
     userName: '',
     fullName: '',
-    loading: true
+    loading: true,
+    postsList: []
   })
 
   const navigate = useNavigate()
   const location = useLocation()
 
   useEffect(() => {
-    profileHandler()
+    profileHandler()   
   }, [])
 
   const profileHandler = async () => {
     await fetch('/v1/api/profile', {
       method: 'POST',
       credentials: 'include',
-    }).then((d) => d.json()).then((d) => {
-      if (d.userName && d.fullName) {
-        setAppValues((prevState) => (
-          { ...prevState, userName: d.userName, fullName: d.fullName, loading: false }
-        ))
+    }).then((d) => d.json()).then(async (d) => {
+      if (d.userName && d.fullName) {        
         if (location.pathname === '/register' || location.pathname === '/login') {
           navigate('/')
         }
+        await postListApiCall()        
+        setAppValues((prevState) => (
+          { ...prevState, userName: d.userName, fullName: d.fullName, loading: false }
+        ))
       } else {
         setAppValues((prevState) => (
           { ...prevState, loading: false, userName: '', fullName: '' }
@@ -59,6 +61,19 @@ function App() {
     });
   }
 
+  const postListApiCall = async () => {
+    await fetch('/v1/api/posts', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then((response) => response.json()).then(d => {      
+      setAppValues((prevState) => (
+        { ...prevState, postsList: d.postsList }
+      ))
+    });
+  }
+
   return (
     <BlogContext.Provider value={{ appValues, profileHandler }}>
       {!appValues.loading ? <div>
@@ -69,8 +84,8 @@ function App() {
           <Route path='/register' element={<Register />} />
           <Route path='/create-post' element={<CreatePost />} />
         </Routes>
-      </div> : 
-      <Loading/>
+      </div> :
+        <Loading />
       }
     </BlogContext.Provider>
   );

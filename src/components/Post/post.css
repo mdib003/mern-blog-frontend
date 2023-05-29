@@ -34,3 +34,9 @@
     color: #e8c887;
     background-color: #fff;  
 }
+
+.author-title {
+    font-weight: 400;
+    font-size: 14px;
+    color:dimgrey
+}
