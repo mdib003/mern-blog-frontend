@@ -23,11 +23,15 @@
     background-color: #e8c887;
     outline: none;
     border: 1px solid #e8c887;
-    padding: 8px;
+    padding: 12px;
     border-radius: 6px;
     margin-top: 8px;
     cursor: pointer;
     transition: all 0.3s;
+    display: inline-block;
+    line-height: 18px;
+    font-size: 16px;
+    text-decoration: none;
 }
 
 .read-more-btn:hover {

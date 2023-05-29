@@ -7,6 +7,7 @@ import { Register } from "./components/Register";
 import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import "./App.css";
 import { Loading } from "./components/Loading";
+import { PostDetail } from "./components/PostDetail";
 
 export const BlogContext = createContext()
 
@@ -16,14 +17,14 @@ function App() {
     userName: '',
     fullName: '',
     loading: true,
-    postsList: []
+    postList: []
   })
 
   const navigate = useNavigate()
   const location = useLocation()
 
   useEffect(() => {
-    profileHandler()   
+    profileHandler()
   }, [])
 
   const profileHandler = async () => {
@@ -34,8 +35,7 @@ function App() {
       if (d.userName && d.fullName) {        
         if (location.pathname === '/register' || location.pathname === '/login') {
           navigate('/')
-        }
-        await postListApiCall()        
+        }             
         setAppValues((prevState) => (
           { ...prevState, userName: d.userName, fullName: d.fullName, loading: false }
         ))
@@ -61,21 +61,16 @@ function App() {
     });
   }
 
-  const postListApiCall = async () => {
-    await fetch('/v1/api/posts', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then((response) => response.json()).then(d => {      
-      setAppValues((prevState) => (
-        { ...prevState, postsList: d.postsList }
-      ))
-    });
+  const postListHandler = (postsArray) => {   
+    setAppValues((prevState) => (
+      { ...prevState, postList: postsArray}
+    ))
   }
 
+ 
+
   return (
-    <BlogContext.Provider value={{ appValues, profileHandler }}>
+    <BlogContext.Provider value={{ appValues, profileHandler, postListHandler }}>
       {!appValues.loading ? <div>
         <BlogNavigation></BlogNavigation>
         <Routes>
@@ -83,6 +78,7 @@ function App() {
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path='/create-post' element={<CreatePost />} />
+          <Route path='/post/:id' element={<PostDetail />} />
         </Routes>
       </div> :
         <Loading />
